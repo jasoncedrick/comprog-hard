@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Viewport meta tag for mobile responsiveness -->
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to your primary CSS file -->
+    <link rel="stylesheet" type="text/css" href="mobile.css"> <!-- Link to the mobile CSS file -->
+</head>
+    <title>Computer Programming</title>
+    <style>
+        /* Styles (same as before) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .question {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .submit-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .submit-button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .result h2 {
+            font-size: 24px;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .question {
+                font-size: 16px;
+            }
+            .answer-input,
+            .submit-button {
+                font-size: 14px;
+            }
+            .result {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Quiz Page</h1>
+
+    <div class="container">
+        <div id="question" class="question"></div>
+        <p id="question-text"></p>
+        <input type="text" id="answer-input" class="answer-input" placeholder="Your answer">
+        <br>
+        <button id="submit-button" class="submit-button" onclick="checkAnswer()">Submit Answer</button>
+        <button id="show-correct-button" class="submit-button" onclick="showCorrectAnswers()">Show Correct Answers</button>
+        <button id="review-previous-button" class="submit-button" onclick="reviewPrevious()">Review Previous</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script type="text/javascript">
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                if (i !== j) {
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+            }
+        }
+
+        const questions = [
+        "To execute a program in a high-level language by translating it one line at a time. - Interpret",
+        "A line of code that represents a command or action. The statements we have seen are declarations, assignments, and output statements. - Statement",
+        "A statement that creates a new variable and determines its type. - Declaration",
+        "The ability to combine simple expressions and statements into compound statements and expressions to represent complex computations concisely. - Composition",
+        "A statement that declares a new variable and assigns a value to it at the same time. - Initialization",
+        "Having more than one function with the same name but different parameters. - Overloading",
+        "One pass through (execution of) the body of the loop, including the evaluation of the condition. - Iteration",
+        "To replace something unnecessarily specific (like a constant value) with something appropriately general (like a variable or parameter). - Generalize",
+        "A collection of related data that comes with a set of functions that operate on it. The objects we have used so far are the cout object provided by the system, and strings. - Object",
+        "A variable or value used to select one of the members of an ordered set, like a character from a string. - Index",
+        "To iterate through all the elements of a set performing a similar operation on each. - Traverse",
+        "A collection of data grouped together and treated as a single object. - Structure",
+        "One of the named pieces of data that make up a structure. - Instance variable", 
+        "A function that operates on an object that is passed as an implicit parameter named this. - Member function",
+        "To call a function 'on' an object, in order to pass the object as an implicit parameter. - Invoke",
+        "The object on which a member function is invoked. - Current object",
+        "A description of how a function is used, including the number and types of the parameters and the type of the return value. - Interface",
+        "A statement that declares the interface to a function without providing the body. Declarations of member functions appear inside structure definitions even if the definitions appear outside. - Function declaration",
+        "A special function that initializes the instance variables of a newly-created object. - Constructor",
+        "A function that provides access (read or write) to a private instance variable. - Accessor function",
+        "To divide a large complex program into components (like functions) and isolate the components from each other (for example, by using local variables. - Encapsulate",
+        ]
+        shuffle(questions);
+
+        let score = 0;
+        let currentIndex = 0;
+        let reviewIndex = -1; // Initialize reviewIndex
+
+        function displayQuestion() {
+            if (currentIndex < questions.length) {
+                const questionData = questions[currentIndex].split(' - ');
+                const questionText = questionData[0];
+
+                document.getElementById('question').textContent = `Question ${currentIndex + 1}:`;
+                document.getElementById('question-text').textContent = questionText;
+                document.getElementById('answer-input').value = '';
+
+                currentIndex++;
+            } else {
+                showResult();
+            }
+        }
+
+        function checkAnswer() {
+            const userInput = document.getElementById('answer-input').value;
+            const answerData = questions[currentIndex - 1].split(' - ');
+            const correctAnswer = answerData[1];
+
+            const resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `<h2>Question ${currentIndex}</h2>`;
+            
+            if (userInput.toLowerCase() === correctAnswer.toLowerCase()) {
+                resultContainer.innerHTML += `<p>Your answer (${userInput}) is <strong>correct</strong>.</p>`;
+                score++;
+            } else {
+                resultContainer.innerHTML += `<p>Your answer (${userInput}) is <strong>incorrect</strong>. The correct answer is: ${correctAnswer}</p>`;
+            }
+
+            displayQuestion();
+        }
+
+        function showCorrectAnswers() {
+            const resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `<h2>Quiz completed</h2>`;
+
+            for (let i = 0; i < questions.length; i++) {
+                const questionData = questions[i].split(' - ');
+                const questionText = questionData[0];
+                const correctAnswer = questionData[1];
+
+                resultContainer.innerHTML += `
+                    <p>Question ${i + 1}: ${questionText}</p>
+                    <p>Your Answer: ${correctAnswer}</p>
+                    <p>Correct Answer: ${correctAnswer}</p>
+                    <p>Correct</p>
+                    <hr>
+                `;
+            }
+        }
+        function displayWrongAnswers() {
+            const resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `<h2>Wrong Answers</h2>`;
+
+            for (let i = 0; i < wrongAnswers.length; i++) {
+                resultContainer.innerHTML += `
+                    <p>Question ${i + 1}: ${wrongAnswers[i].question}</p>
+                    <p>Your Answer: ${wrongAnswers[i].yourAnswer}</p>
+                    <p>Correct Answer: ${wrongAnswers[i].correctAnswer}</p>
+                    <p>Incorrect</p>
+                    <hr>
+                `;
+            }
+        }
+        function reviewPrevious() {
+            if (reviewIndex >= 0) {
+                currentIndex = reviewIndex; // Set currentIndex to the reviewIndex
+                reviewIndex--;
+                displayQuestion();
+
+            } else if (currentIndex > 1) {
+                // Allow reviewing the first question if currentIndex is greater than 1
+                currentIndex = 0;
+                reviewIndex = -1;
+                displayQuestion();
+            }
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
